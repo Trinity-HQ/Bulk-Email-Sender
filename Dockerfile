@@ -1,4 +1,4 @@
-FROM php:8.2-cli
+FROM php:8.4-cli
 
 WORKDIR /var/www/html
 
@@ -7,20 +7,26 @@ RUN apt-get update && apt-get install -y \
     unzip \
     libzip-dev \
     libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
     libonig-dev \
     libxml2-dev \
     libpq-dev \
     curl \
     nodejs \
     npm \
+    && docker-php-ext-configure gd \
+        --with-freetype \
+        --with-jpeg \
     && docker-php-ext-install \
-    pdo \
-    pdo_pgsql \
-    mbstring \
-    bcmath \
-    exif \
-    pcntl \
-    zip \
+        pdo \
+        pdo_pgsql \
+        mbstring \
+        bcmath \
+        exif \
+        pcntl \
+        zip \
+        gd \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
