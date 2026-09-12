@@ -32,22 +32,21 @@ RUN apt-get update && apt-get install -y \
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-COPY composer.json composer.lock ./
+# Copy the complete Laravel application first
+COPY . .
 
+# Install PHP dependencies after artisan exists
 RUN composer install \
     --no-dev \
     --no-interaction \
     --prefer-dist \
     --optimize-autoloader
 
-COPY package.json package-lock.json* ./
-
+# Install frontend dependencies and build assets
 RUN npm install
-
-COPY . .
-
 RUN npm run build
 
+# Create storage symlink if possible
 RUN php artisan storage:link || true
 
 EXPOSE 10000
